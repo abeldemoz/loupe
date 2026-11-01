@@ -75,7 +75,7 @@ version with [mise](https://mise.jdx.dev):
 A version pin means new rules reach an app only when the app bumps it.
 
 Loupe reads `Package.swift` through `swift package dump-package`, so a Swift toolchain that supports
-the manifests' tools-version must be on `PATH`.
+the manifests' tools-version must be on `PATH`. Building Loupe itself needs Swift 6.2 or newer.
 
 ## Usage
 

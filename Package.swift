@@ -1,4 +1,4 @@
-// swift-tools-version: 6.4
+// swift-tools-version: 6.2
 
 import PackageDescription
 
@@ -10,8 +10,9 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.2.0"),
-        // The major version tracks the Swift release: 604 is Swift 6.4.
-        .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "604.0.0"),
+        // The major version tracks the Swift release: 603 is Swift 6.3. It builds with newer toolchains
+        // too, and it is what GitHub's macOS runners (Xcode 26, Swift 6.3) can build.
+        .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "603.0.1"),
     ],
     targets: [
         // The canonical architecture: roles, target kinds and the dependency policy. No IO and no
