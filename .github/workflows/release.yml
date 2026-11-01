@@ -36,6 +36,11 @@ jobs:
           for arch in arm64 x86_64; do
             tar -czf "dist/loupe-$version-macos-$arch.tar.gz" -C "$(dirname "$bin")" loupe
           done
+      - name: Smoke test (the runner is arm64; an unsigned or broken binary would be killed on launch)
+        run: |
+          mkdir smoke && tar -xzf dist/loupe-*-macos-arm64.tar.gz -C smoke
+          ./smoke/loupe --version
+          ./smoke/loupe rules | head -3
       - uses: actions/upload-artifact@v4
         with:
           name: dist-macos
