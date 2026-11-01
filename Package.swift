@@ -4,6 +4,8 @@ import PackageDescription
 
 let package = Package(
     name: "Loupe",
+    // swift-syntax needs macOS 10.15, and the apps' own packages already require macOS 13.
+    platforms: [.macOS(.v13)],
     products: [
         .executable(name: "loupe", targets: ["LoupeCLI"]),
         .library(name: "LoupeArchitecture", targets: ["LoupeArchitecture"]),
