@@ -96,3 +96,11 @@ jobs:
           cd ..
           gh release create "$GITHUB_REF_NAME" dist/* loupe.schema.json \
             --title "Loupe ${GITHUB_REF_NAME#v}" --generate-notes
+
+  verify:
+    name: Verify the release installs through mise
+    needs: publish
+    uses: ./.github/workflows/verify-install.yml
+    with:
+      # The tag is vX.Y.Z; the release and its binaries are X.Y.Z.
+      version: ${{ github.ref_name }}

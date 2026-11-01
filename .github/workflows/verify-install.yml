@@ -1,0 +1,47 @@
+name: Verify install
+
+# Installs a published release the way the apps do, through mise's github: backend, on both operating
+# systems. Apps pick the right asset by file name, so a naming mistake only shows up here. Runs after
+# every release, and by hand for any version.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release to install, e.g. 0.1.0 (a leading v is fine)"
+        required: true
+        type: string
+  workflow_call:
+    inputs:
+      version:
+        description: "Release to install, e.g. 0.1.0 (a leading v is fine)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    name: Install ${{ inputs.version }} (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-26]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - uses: jdx/mise-action@v4
+        with:
+          install: false
+          cache: false
+      - name: Install through mise and run it
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          version="${VERSION#v}"
+          mise use -g "github:${GITHUB_REPOSITORY}@${version}"
+          reported="$(mise exec -- loupe --version)"
+          echo "installed: $reported"
+          test "$reported" = "$version"
+          mise exec -- loupe rules | head -3
