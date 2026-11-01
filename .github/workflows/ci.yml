@@ -43,5 +43,7 @@ jobs:
       - run: swift build --product loupe
       - run: swift test
 
-      - name: Test the Claude Code Stop hook
-        run: Tests/hooks/test-stop-hook.sh
+      - name: Lint and test the Claude Code Stop hook
+        run: |
+          if [ "$RUNNER_OS" = Linux ]; then shellcheck hooks/*.sh Tests/hooks/*.sh; fi
+          Tests/hooks/test-stop-hook.sh

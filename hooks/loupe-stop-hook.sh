@@ -41,8 +41,8 @@ case "$status" in
     1)
         {
             printf '%s\n' "$output"
-            printf '\nloupe found architecture violations. Fix each one as its fix: line says, then run `loupe check %s` again.\n' "$directory"
-            printf 'Do not add a `loupe:allow` comment to make a violation go away without asking the user first.\n'
+            printf '\nloupe found architecture violations. Fix each one as its fix: line says, then run: loupe check %s\n' "$directory"
+            printf 'Do not add a loupe:allow comment to make a violation go away without asking the user first.\n'
         } >&2
         exit 2
         ;;

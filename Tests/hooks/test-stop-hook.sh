@@ -56,7 +56,7 @@ grep -qx 'check Client' "$LOUPE_CALLS" || { echo "FAIL: wrong arguments: $(cat "
 
 # 4. Violations block the stop and the report reaches the agent.
 FAKE_STATUS=1 FAKE_OUTPUT='A.swift:1:1: error: [interface-function] x' run '{}' 2 "violations block with the report" "[interface-function]"
-FAKE_STATUS=1 FAKE_OUTPUT='x' run '{}' 2 "violations tell the agent not to add allows unasked" "Do not add a \`loupe:allow\`"
+FAKE_STATUS=1 FAKE_OUTPUT='x' run '{}' 2 "violations tell the agent not to add allows unasked" "Do not add a loupe:allow comment"
 
 # 5. Already continuing because of this hook: never loop.
 FAKE_STATUS=1 run '{"stop_hook_active": true}' 0 "stop_hook_active never blocks again"
