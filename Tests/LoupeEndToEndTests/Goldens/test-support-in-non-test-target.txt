@@ -1,0 +1,7 @@
+Presentation/Package.swift:25:44: error: [test-support-in-non-test-target] 'RoutingTestDoubles' depends on 'TestSupport'
+    rule: Only `.testTarget` targets may depend on TestSupport.
+    why:  A routing test doubles target may depend only on Presentation, the presentation interface, the core interface and Utilities. TestSupport is test-only code, so it must never be linked into a target that ships.
+    fix:  Remove .product(name: "TestSupport", package: "Utilities") from the dependencies of 'RoutingTestDoubles'. Only test targets may use TestSupport; if non-test code needs the helper, move it to Utilities.
+    more: loupe explain test-support-in-non-test-target
+
+Loupe found 1 violation in 1 file. Checked 6 packages, 19 targets, 19 source files.

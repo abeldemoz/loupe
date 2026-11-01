@@ -1,0 +1,7 @@
+Core/UseCases/UseCasesImplementations/ProductUseCase.swift:1:8: error: [undeclared-import] 'UseCasesImplementations' imports 'Networking' but doesn't declare it as a dependency
+    rule: Every first-party module a file imports must be a direct dependency of its target in Package.swift.
+    why:  SwiftPM lets a target import anything reachable through its dependencies, so a forbidden dependency can hide as an undeclared transitive import. Requiring every import to be declared makes Package.swift the complete graph, which is what the dependency rules check.
+    fix:  Add "Networking" to the dependencies of 'UseCasesImplementations' in Core/Package.swift:67, or remove the import if it isn't needed.
+    more: loupe explain undeclared-import
+
+Loupe found 1 violation in 1 file. Checked 6 packages, 19 targets, 19 source files.

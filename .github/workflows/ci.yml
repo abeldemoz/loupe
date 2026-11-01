@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        # Loupe runs on developers' Macs and on Linux CI, so it is tested on both.
+        os: [macos-26, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      # Loupe is tools-version 6.4, so it needs the newest Xcode the runner has.
+      - name: Select the newest Xcode
+        if: runner.os == 'macOS'
+        run: |
+          xcode="$(ls -d /Applications/Xcode*.app | sort -V | tail -1)"
+          echo "Using $xcode"
+          sudo xcode-select -s "$xcode"
+
+      - name: Install Swift
+        if: runner.os == 'Linux'
+        uses: jdx/mise-action@v2
+
+      - run: swift --version
+
+      # The CLI tests run the built binary, so build it before testing. Run the tests unfiltered:
+      # `swift test --filter` can hang in swiftpm-testing-helper on this toolchain.
+      - run: swift build --product loupe
+      - run: swift test
+
+      - name: Test the Claude Code Stop hook
+        run: Tests/hooks/test-stop-hook.sh

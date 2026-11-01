@@ -1,0 +1,17 @@
+Core/Package.swift:63:17: error: [implementation-dependency] 'UseCasesImplementations' depends on 'ProductsImplementations'
+    rule: An implementations target (Presentation, `<Feature>Implementations`) may depend only on interface targets, plus SharedImplementations in Core. Never on another implementation, and never on a test doubles target.
+    why:  A Core feature implementations target may depend only on interfaces.
+    fix:  Replace "ProductsImplementations" with 'Products'.
+    more: loupe explain implementation-dependency
+
+Presentation/A.swift:1:8: error: [non-linux-import] Unconditional `import UIKit` in 'Presentation' can't be built on Linux
+    rule: A Swift package may unconditionally import only declared first-party modules and system modules that exist on Linux: Dispatch, Foundation, FoundationEssentials, Observation, RegexBuilder, Swift, Synchronization, Testing, XCTest. Any other import must sit inside `#if canImport(Module)`.
+    why:  Packages build and test on Linux CI. UI frameworks and Apple-only system frameworks live in the Xcode projects (UI, Infrastructure, the composition root), which is why those aren't packages. An allowlist fails closed: a framework nobody thought of is caught too.
+    fix:  Wrap it in `#if canImport(UIKit)`.
+Or move the code.
+100% of 50, really: yes
+    more: loupe explain non-linux-import
+
+Core/B.swift:9:5: note: [allow-added] This branch adds `loupe:allow interface-function`: legacy
+
+Loupe found 2 violations in 2 files. Checked 6 packages, 22 targets, 58 source files. 2 violations are excused by loupe:allow. 1 new loupe:allow needs review.

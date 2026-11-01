@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Loupe configuration",
+  "description": "Maps an app's Swift packages and targets onto the roles of the architecture that Loupe checks. See `loupe rules` for the rules themselves.",
+  "type": "object",
+  "required": ["version", "packages"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "version": {
+      "description": "The version of this file's format.",
+      "const": 1
+    },
+    "packages": {
+      "description": "The Swift packages in the architecture, by role. Packages that are not listed are not checked.",
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "properties": {
+        "utilities": {
+          "description": "Self-contained utilities that any package may depend on, plus the TestSupport target that only test targets may use.",
+          "$ref": "#/$defs/utilitiesPackage"
+        },
+        "coreInterface": {
+          "description": "Domain models and protocols that Presentation consumes.",
+          "$ref": "#/$defs/interfacePackage"
+        },
+        "crossInterface": {
+          "description": "Cross-cutting concerns such as logging and analytics.",
+          "$ref": "#/$defs/interfacePackage"
+        },
+        "presentationInterface": {
+          "description": "Scene protocols and view-ready data shapes (Prism: SceneInterface).",
+          "$ref": "#/$defs/interfacePackage"
+        },
+        "core": {
+          "description": "Domain logic, one folder per feature: <Feature>/<Feature><Role>/.",
+          "$ref": "#/$defs/corePackage"
+        },
+        "presentation": {
+          "description": "Implements the presentation interface and bridges Core to the UI.",
+          "$ref": "#/$defs/presentationPackage"
+        }
+      }
+    },
+    "exclude": {
+      "description": "Source paths Loupe skips, such as generated code. Every entry says why.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["glob", "reason"],
+        "additionalProperties": false,
+        "properties": {
+          "glob": {
+            "description": "A path relative to this file. `*` and `?` match within one path component; `**` matches any number of components.",
+            "type": "string",
+            "minLength": 1
+          },
+          "reason": {
+            "description": "Why this path is exempt.",
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "path": {
+      "description": "The package directory, relative to this file.",
+      "type": "string",
+      "minLength": 1
+    },
+    "targetName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "corePackage": {
+      "type": "object",
+      "required": ["path"],
+      "additionalProperties": false,
+      "properties": {
+        "path": { "$ref": "#/$defs/path" }
+      }
+    },
+    "utilitiesPackage": {
+      "type": "object",
+      "required": ["path"],
+      "additionalProperties": false,
+      "properties": {
+        "path": { "$ref": "#/$defs/path" },
+        "target": {
+          "description": "The main target, when it isn't named like the package directory.",
+          "$ref": "#/$defs/targetName"
+        },
+        "testSupport": {
+          "description": "The target of test-only helpers. Only test targets may depend on it.",
+          "$ref": "#/$defs/targetName"
+        }
+      }
+    },
+    "interfacePackage": {
+      "type": "object",
+      "required": ["path"],
+      "additionalProperties": false,
+      "properties": {
+        "path": { "$ref": "#/$defs/path" },
+        "target": {
+          "description": "The main target, when it isn't named like the package directory.",
+          "$ref": "#/$defs/targetName"
+        },
+        "testDoubles": {
+          "description": "The target holding test doubles for this interface's protocols.",
+          "$ref": "#/$defs/targetName"
+        }
+      }
+    },
+    "presentationPackage": {
+      "type": "object",
+      "required": ["path"],
+      "additionalProperties": false,
+      "properties": {
+        "path": { "$ref": "#/$defs/path" },
+        "target": {
+          "description": "The main target, when it isn't named like the package directory.",
+          "$ref": "#/$defs/targetName"
+        },
+        "routingTestDoubles": {
+          "description": "The target holding test doubles for the routing protocols that live in the presentation package.",
+          "$ref": "#/$defs/targetName"
+        }
+      }
+    }
+  }
+}

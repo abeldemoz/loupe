@@ -1,0 +1,93 @@
+name: Release
+
+# Push a tag like v0.1.0 to publish binaries. Apps pin a version with mise's github: backend.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+env:
+  # The Swift Static Linux SDK that builds binaries needing no Swift runtime on the target machine.
+  STATIC_SDK_URL: https://download.swift.org/swift-6.4.0-release/static-sdk/swift-6.4.0-RELEASE/swift-6.4.0-RELEASE_static-linux-0.1.0.artifactbundle.tar.gz
+  STATIC_SDK_CHECKSUM: 47d2fd89eebfdf9eb4d536b6710414297f755c17926cdebc4742c08982b40a9e
+
+jobs:
+  macos:
+    name: Build (macOS, universal)
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select the newest Xcode
+        run: |
+          xcode="$(ls -d /Applications/Xcode*.app | sort -V | tail -1)"
+          sudo xcode-select -s "$xcode"
+      - name: Build
+        run: |
+          swift build -c release --product loupe --arch arm64 --arch x86_64
+          bin="$(swift build -c release --arch arm64 --arch x86_64 --show-bin-path)/loupe"
+          lipo -info "$bin"
+          version="${GITHUB_REF_NAME#v}"
+          mkdir dist
+          # One universal binary, published under both architecture names, because mise's github:
+          # backend picks the asset whose name matches the machine's OS and architecture.
+          for arch in arm64 x86_64; do
+            tar -czf "dist/loupe-$version-macos-$arch.tar.gz" -C "$(dirname "$bin")" loupe
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-macos
+          path: dist/
+
+  linux:
+    name: Build (Linux ${{ matrix.arch }}, static)
+    strategy:
+      matrix:
+        arch: [x86_64, aarch64]
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+      - name: Install the static Linux SDK
+        run: swift sdk install "$STATIC_SDK_URL" --checksum "$STATIC_SDK_CHECKSUM"
+      - name: Build
+        run: |
+          swift build -c release --product loupe --swift-sdk "${{ matrix.arch }}-swift-linux-musl"
+          bin="$(swift build -c release --swift-sdk "${{ matrix.arch }}-swift-linux-musl" --show-bin-path)/loupe"
+          file "$bin"
+          version="${GITHUB_REF_NAME#v}"
+          mkdir dist
+          tar -czf "dist/loupe-$version-linux-${{ matrix.arch }}.tar.gz" -C "$(dirname "$bin")" loupe
+      - name: Smoke test (x86_64 only; the runner can't execute aarch64)
+        if: matrix.arch == 'x86_64'
+        run: |
+          mkdir smoke && tar -xzf dist/*.tar.gz -C smoke
+          ./smoke/loupe --version
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-linux-${{ matrix.arch }}
+          path: dist/
+
+  publish:
+    name: Publish the release
+    needs: [macos, linux]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: dist-*
+          path: dist
+          merge-multiple: true
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd dist
+          sha256sum *.tar.gz > checksums.txt
+          cd ..
+          gh release create "$GITHUB_REF_NAME" dist/* loupe.schema.json \
+            --title "Loupe ${GITHUB_REF_NAME#v}" --generate-notes

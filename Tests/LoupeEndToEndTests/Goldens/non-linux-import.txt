@@ -1,0 +1,7 @@
+Presentation/Sources/Presentation/ProductPresenter.swift:1:8: error: [non-linux-import] Unconditional `import UIKit` in 'Presentation' can't be built on Linux
+    rule: A Swift package may unconditionally import only declared first-party modules and system modules that exist on Linux: Dispatch, Foundation, FoundationEssentials, Observation, RegexBuilder, Swift, Synchronization, Testing, XCTest. Any other import must sit inside `#if canImport(Module)`.
+    why:  'UIKit' is neither a declared first-party module nor one of the system modules available on Linux (Dispatch, Foundation, FoundationEssentials, Observation, RegexBuilder, Swift, Synchronization, Testing, XCTest), and packages must build on Linux CI.
+    fix:  If UIKit is an Apple-only framework, move the code that uses it to the UI layer or Infrastructure (Xcode projects), or wrap the import and that code in `#if canImport(UIKit)` … `#endif`. If it is a first-party module, add it to the dependencies of 'Presentation' (only where the architecture allows).
+    more: loupe explain non-linux-import
+
+Loupe found 1 violation in 1 file. Checked 6 packages, 19 targets, 19 source files.

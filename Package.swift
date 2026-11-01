@@ -1,31 +1,55 @@
 // swift-tools-version: 6.4
-// The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
 let package = Package(
     name: "Loupe",
+    products: [
+        .executable(name: "loupe", targets: ["LoupeCLI"]),
+        .library(name: "LoupeArchitecture", targets: ["LoupeArchitecture"]),
+    ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.2.0"),
+        // The major version tracks the Swift release: 604 is Swift 6.4.
+        .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "604.0.0"),
     ],
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
-        .executableTarget(
-            name: "Loupe",
+        // The canonical architecture: roles, target kinds and the dependency policy. No IO and no
+        // parsing, so a future app generator can reuse it.
+        .target(name: "LoupeArchitecture"),
+        .target(
+            name: "LoupeCore",
             dependencies: [
-                .product(name: "ArgumentParser", package: "swift-argument-parser"),
+                "LoupeArchitecture",
+                .product(name: "SwiftParser", package: "swift-syntax"),
+                .product(name: "SwiftSyntax", package: "swift-syntax"),
             ],
-            swiftSettings: [
-                .enableUpcomingFeature("ApproachableConcurrency"),
+        ),
+        .executableTarget(
+            name: "LoupeCLI",
+            dependencies: [
+                "LoupeCore",
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
             ],
         ),
         .testTarget(
-            name: "LoupeTests",
-            dependencies: ["Loupe"],
-            swiftSettings: [
-                .enableUpcomingFeature("ApproachableConcurrency"),
+            name: "LoupeArchitectureTests",
+            dependencies: ["LoupeArchitecture"],
+        ),
+        .testTarget(
+            name: "LoupeCoreTests",
+            dependencies: [
+                "LoupeCore",
+                .product(name: "SwiftParser", package: "swift-syntax"),
+                .product(name: "SwiftSyntax", package: "swift-syntax"),
             ],
+            exclude: ["Goldens"],
+        ),
+        .testTarget(
+            name: "LoupeEndToEndTests",
+            // CLITests run the built `loupe` binary, so `swift build` has to come before `swift test`.
+            dependencies: ["LoupeCore"],
+            exclude: ["Goldens"],
         ),
     ]
 )

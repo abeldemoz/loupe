@@ -1,0 +1,19 @@
+SceneInterface/Sources/SceneInterface/ProductSceneModel.swift:4:12: error: [interface-init-not-trivial] The init of 'ProductSceneModel' is throwing
+    rule: The init of an interface struct only assigns each parameter to a stored property (`self.x = x`), assigns every stored property, and is neither failable, throwing nor async.
+    why:  Anything beyond assignment (clamping, formatting, validation, a hidden default) is logic. Model construction must be a plain copy of data so every consumer sees the same value.
+    fix:  Make it a plain synchronous, non-throwing init that only assigns its parameters.
+    more: loupe explain interface-init-not-trivial
+
+SceneInterface/Sources/SceneInterface/ProductSceneModel.swift:4:32: error: [interface-init-default-argument] Parameter 'subtitle' of the init of 'ProductSceneModel' has a default value
+    rule: Init parameters in interface targets have no default values.
+    why:  A default argument is a default value by another route: a decision made for every caller.
+    fix:  Remove `= nil` from subtitle and pass it explicitly at each call site.
+    more: loupe explain interface-init-default-argument
+
+SceneInterface/Sources/SceneInterface/ProductSceneModel.swift:5:9: error: [interface-init-not-trivial] The init of 'ProductSceneModel' does more than assign: `self.title = title.trimmingCharacters(in: .whitespaces)`
+    rule: The init of an interface struct only assigns each parameter to a stored property (`self.x = x`), assigns every stored property, and is neither failable, throwing nor async.
+    why:  Anything beyond assignment (clamping, formatting, validation, a hidden default) is logic. Model construction must be a plain copy of data so every consumer sees the same value.
+    fix:  Replace it with `self.property = parameter`, and move the logic to the code that builds ProductSceneModel.
+    more: loupe explain interface-init-not-trivial
+
+Loupe found 3 violations in 1 file. Checked 6 packages, 19 targets, 19 source files.

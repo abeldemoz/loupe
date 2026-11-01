@@ -1,0 +1,7 @@
+Presentation/Package.swift:11:9: error: [third-party-dependency] 'Presentation' depends on the third-party package 'swift-collections' (https://github.com/apple/swift-collections.git)
+    rule: Packages in the architecture may not depend on third-party packages (`.package(url:)`).
+    why:  Third-party frameworks are confined to Infrastructure so they can be swapped without touching any other package. Packages also have to build on Linux, which third-party code often doesn't.
+    fix:  Remove .package(url: "https://github.com/apple/swift-collections.git", …) from Presentation/Package.swift and the dependencies on its products from: Presentation. Put the code that needs it in Infrastructure, behind a protocol declared in an interface package.
+    more: loupe explain third-party-dependency
+
+Loupe found 1 violation in 1 file. Checked 6 packages, 19 targets, 19 source files.

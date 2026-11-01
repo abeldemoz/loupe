@@ -1,0 +1,13 @@
+SceneInterface/Sources/SceneInterface/ProductSceneModel.swift:8:17: error: [interface-function] 'ProductSceneModel' declares the method 'isLong()'
+    rule: Concrete types in interface targets are data-only: no `func` and no `subscript`. Protocol requirements are fine.
+    why:  "Move that logic to the consumer": behavior is an implementation detail. If the interface owns it, every change recompiles everything that depends on the interface, and every consumer is stuck with one answer.
+    fix:  Move isLong() to the consumer that calls it, as a function or an extension of ProductSceneModel in the implementation target that uses it.
+    more: loupe explain interface-function
+
+SceneInterface/Sources/SceneInterface/ProductSceneModel.swift:9:23: error: [interface-static-member] Static let 'empty' in 'ProductSceneModel'
+    rule: Interface targets declare no `static`/`class` members and no global variables, constants or functions.
+    why:  A preset such as `static let empty` is a decision about what a default value means. That belongs to the consumers that need it, not to the contract everyone shares.
+    fix:  Move empty to the consumer that needs it. A preset or constant is that consumer's decision, not part of the shared contract.
+    more: loupe explain interface-static-member
+
+Loupe found 2 violations in 1 file. Checked 6 packages, 19 targets, 19 source files.

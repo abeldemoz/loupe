@@ -1,0 +1,25 @@
+SceneInterface/Sources/SceneInterface/ProductSceneModel.swift:7:1: error: [allow-missing-reason] `loupe:allow interface-static-member` has no reason
+    rule: Every `loupe:allow` ends with `-- <reason>`, and the reason is not empty.
+    why:  An exception without a reason can't be reviewed or revisited. The reason is the whole point of writing the allow rather than fixing the code.
+    fix:  Append ` -- <why this is the right exception>`: `// loupe:allow interface-static-member -- <reason>`. Until it has one, it excuses nothing.
+    more: loupe explain allow-missing-reason
+
+SceneInterface/Sources/SceneInterface/ProductSceneModel.swift:8:12: error: [interface-static-member] Global let 'noReason' in 'SceneInterface'
+    rule: Interface targets declare no `static`/`class` members and no global variables, constants or functions.
+    why:  A preset such as `static let empty` is a decision about what a default value means. That belongs to the consumers that need it, not to the contract everyone shares.
+    fix:  Move noReason to the consumer that needs it. A preset or constant is that consumer's decision, not part of the shared contract.
+    more: loupe explain interface-static-member
+
+SceneInterface/Sources/SceneInterface/ProductSceneModel.swift:9:1: error: [allow-unknown-rule] `loupe:allow` names the unknown rule 'interface-fucntion'
+    rule: `// loupe:allow <rule-id> -- <reason>` must name a rule that exists and can be allowed.
+    why:  A misspelled rule id would excuse nothing while looking like it did. The allow-* rules themselves can't be allowed.
+    fix:  Did you mean 'interface-function'? The ids are listed by `loupe rules`.
+    more: loupe explain allow-unknown-rule
+
+SceneInterface/Sources/SceneInterface/ProductSceneModel.swift:10:1: error: [allow-unused] `loupe:allow interface-function` excuses nothing: no 'interface-function' violation is reported on line 11
+    rule: Every `loupe:allow` must match a violation of that rule on its line (trailing) or the line below it (standalone).
+    why:  A stale allow silently excuses a future violation of the same rule on that line.
+    fix:  Delete the comment if the violation is gone. If it moved, place the comment on the line the violation is reported on.
+    more: loupe explain allow-unused
+
+Loupe found 4 violations in 1 file. Checked 6 packages, 19 targets, 19 source files.

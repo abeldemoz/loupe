@@ -1,0 +1,7 @@
+SceneInterface/Sources/SceneInterface/ProductSceneModel.swift:3:16: error: [interface-computed-property] 'ProductSceneModel'.shout is a computed property
+    rule: Concrete types in interface targets have only plain stored properties: no computed, `lazy` or observed (`willSet`/`didSet`) properties.
+    why:  A computed property is a method in disguise: logic that every consumer then depends on.
+    fix:  Store shout and compute it where the model is built, or move the computation to the consumer.
+    more: loupe explain interface-computed-property
+
+Loupe found 1 violation in 1 file. Checked 6 packages, 19 targets, 19 source files.

@@ -1,0 +1,43 @@
+{
+  "findings" : [
+    {
+      "column" : 17,
+      "file" : "Core/Package.swift",
+      "fix" : "Replace \"ProductsImplementations\" with 'Products'.",
+      "line" : 63,
+      "message" : "'UseCasesImplementations' depends on 'ProductsImplementations'",
+      "rationale" : "A Core feature implementations target may depend only on interfaces.",
+      "rule" : "implementation-dependency",
+      "ruleStatement" : "An implementations target (Presentation, `<Feature>Implementations`) may depend only on interface targets, plus SharedImplementations in Core. Never on another implementation, and never on a test doubles target.",
+      "severity" : "error"
+    },
+    {
+      "column" : 8,
+      "file" : "Presentation/A.swift",
+      "fix" : "Wrap it in `#if canImport(UIKit)`.\nOr move the code.\n100% of 50, really: yes",
+      "line" : 1,
+      "message" : "Unconditional `import UIKit` in 'Presentation' can't be built on Linux",
+      "rationale" : "Packages build and test on Linux CI. UI frameworks and Apple-only system frameworks live in the Xcode projects (UI, Infrastructure, the composition root), which is why those aren't packages. An allowlist fails closed: a framework nobody thought of is caught too.",
+      "rule" : "non-linux-import",
+      "ruleStatement" : "A Swift package may unconditionally import only declared first-party modules and system modules that exist on Linux: Dispatch, Foundation, FoundationEssentials, Observation, RegexBuilder, Swift, Synchronization, Testing, XCTest. Any other import must sit inside `#if canImport(Module)`.",
+      "severity" : "error"
+    },
+    {
+      "column" : 5,
+      "file" : "Core/B.swift",
+      "line" : 9,
+      "message" : "This branch adds `loupe:allow interface-function`: legacy",
+      "rule" : "allow-added",
+      "severity" : "note"
+    }
+  ],
+  "summary" : {
+    "allowed" : 2,
+    "errors" : 2,
+    "files" : 58,
+    "notes" : 1,
+    "packages" : 6,
+    "targets" : 22
+  },
+  "version" : 1
+}

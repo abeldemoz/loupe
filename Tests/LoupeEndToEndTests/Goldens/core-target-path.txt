@@ -1,0 +1,7 @@
+Core/Package.swift:62:19: error: [core-target-path] Core target 'ProductsTests' is at 'Products/ProductTests', but its feature and role put it at 'Products/ProductsTests'
+    rule: Every Core target declares `path: "<Feature>/<TargetName>"`, relative to the Core package.
+    why:  Matching paths make a target's feature and role visible from its folder, so people, agents and generators can find and place code predictably.
+    fix:  Set `path: "Products/ProductsTests/"` on 'ProductsTests' in Core/Package.swift and move its sources to Core/Products/ProductsTests/.
+    more: loupe explain core-target-path
+
+Loupe found 1 violation in 1 file. Checked 6 packages, 19 targets, 18 source files.

@@ -1,0 +1,6 @@
+# Oldest mise whose swift plugin is not experimental (the same floor Prism uses).
+min_version = "2026.6.6"
+
+[tools]
+# macOS uses the Xcode on the runner; Linux gets its toolchain from here.
+swift = { version = "6.4.0", os = ["linux"] }

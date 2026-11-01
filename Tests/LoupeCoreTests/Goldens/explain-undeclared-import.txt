@@ -1,0 +1,13 @@
+undeclared-import: Imports are declared dependencies
+
+Rule
+  Every first-party module a file imports must be a direct dependency of its target in Package.swift.
+
+Why
+  SwiftPM lets a target import anything reachable through its dependencies, so a forbidden dependency can hide as an undeclared transitive import. Requiring every import to be declared makes Package.swift the complete graph, which is what the dependency rules check.
+
+How to fix
+  Add the module to the target's `dependencies:`, or remove the import if the target doesn't need it. If the architecture doesn't allow the dependency, Loupe says so once you add it; remove the import instead.
+
+To excuse a single violation (ask first; a reviewer will see it):
+  // loupe:allow undeclared-import -- <why this is the right exception>
