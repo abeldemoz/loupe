@@ -1,7 +1,7 @@
 import Foundation
 import LoupeArchitecture
 
-/// Builds a `Workspace` from `loupe.json` and the packages on disk.
+/// Builds a `Workspace` from `.loupe.json` and the packages on disk.
 enum WorkspaceBuilder {
     /// Directories that never hold an app's own sources.
     private static let skippedDirectories: Set<String> = [".build", ".swiftpm", "DerivedData", "node_modules"]
@@ -16,10 +16,10 @@ enum WorkspaceBuilder {
             let directory = root.appendingPathComponent(package.path, isDirectory: true).canonical
             var isDirectory: ObjCBool = false
             guard FileManager.default.fileExists(atPath: directory.path, isDirectory: &isDirectory), isDirectory.boolValue else {
-                throw LoupeError("loupe.json: packages.\(role.rawValue).path is \"\(package.path)\", but there is no such directory (looked in \(directory.path)).\n  Fix the path, or remove the \(role.rawValue) entry if this app has no such package.")
+                throw LoupeError(".loupe.json: packages.\(role.rawValue).path is \"\(package.path)\", but there is no such directory (looked in \(directory.path)).\n  Fix the path, or remove the \(role.rawValue) entry if this app has no such package.")
             }
             guard FileManager.default.fileExists(atPath: directory.appendingPathComponent("Package.swift").path) else {
-                throw LoupeError("loupe.json: packages.\(role.rawValue).path is \"\(package.path)\", but \(directory.path) has no Package.swift.")
+                throw LoupeError(".loupe.json: packages.\(role.rawValue).path is \"\(package.path)\", but \(directory.path) has no Package.swift.")
             }
             directories[role] = directory
         }
@@ -141,7 +141,7 @@ enum WorkspaceBuilder {
             let hint = key == "target"
                 ? "Set packages.\(role.rawValue).target to the package's main target."
                 : "Fix packages.\(role.rawValue).\(key), or remove it."
-            throw LoupeError("loupe.json: packages.\(role.rawValue).\(key) is \"\(name)\", but \(config.path)/Package.swift declares no such target (it declares: \(dumped.targets.map(\.name).sorted().joined(separator: ", "))).\n  \(hint)")
+            throw LoupeError(".loupe.json: packages.\(role.rawValue).\(key) is \"\(name)\", but \(config.path)/Package.swift declares no such target (it declares: \(dumped.targets.map(\.name).sorted().joined(separator: ", "))).\n  \(hint)")
         }
 
         let targets = dumped.targets.map { target -> PendingTarget in

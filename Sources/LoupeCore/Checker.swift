@@ -5,7 +5,7 @@ public enum LoupeVersion {
 }
 
 public struct CheckOptions: Sendable {
-    /// The directory holding `loupe.json`.
+    /// The directory holding `.loupe.json`.
     public var directory: URL
     /// A git ref (e.g. `origin/develop`): report every `loupe:allow` added since its merge-base.
     public var base: String?
@@ -28,7 +28,7 @@ public struct CheckReport: Sendable {
     /// Violations excused by `loupe:allow`.
     public var allowed: Int
     public var stats: Stats
-    /// The directory holding `loupe.json`.
+    /// The directory holding `.loupe.json`.
     public var root: String
 
     public var errors: [Violation] { findings.filter { $0.severity == .error } }

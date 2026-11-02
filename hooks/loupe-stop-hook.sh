@@ -3,7 +3,7 @@
 # any violations back to it. Each violation says which rule broke and how to fix it.
 #
 # Usage (from .claude/settings.json):
-#   "command": "\"$CLAUDE_PROJECT_DIR\"/scripts/loupe-stop-hook.sh <dir containing loupe.json>"
+#   "command": "\"$CLAUDE_PROJECT_DIR\"/scripts/loupe-stop-hook.sh <dir containing .loupe.json>"
 #
 # Exit codes follow the hook contract: 0 lets the agent stop; 2 blocks the stop and shows stderr to the
 # agent. Everything that isn't a rule violation is non-blocking, so this can never wedge a session.
@@ -27,7 +27,7 @@ cd "${CLAUDE_PROJECT_DIR:-$PWD}" 2>/dev/null || exit 0
 git rev-parse --git-dir >/dev/null 2>&1 || exit 0
 changed="$(
     { git diff --name-only HEAD 2>/dev/null; git ls-files --others --exclude-standard 2>/dev/null; } |
-        grep -E '\.swift$|(^|/)loupe\.json$' || true
+        grep -E '\.swift$|(^|/)\.loupe\.json$' || true
 )"
 [ -n "$changed" ] || exit 0
 
@@ -47,7 +47,7 @@ case "$status" in
         exit 2
         ;;
     *)
-        # Loupe itself could not run (bad loupe.json, a Package.swift that won't load). Say so, but
+        # Loupe itself could not run (bad .loupe.json, a Package.swift that won't load). Say so, but
         # don't block: the agent may not be able to fix an environment problem.
         {
             printf 'loupe could not run (exit status %s):\n%s\n' "$status" "$output"

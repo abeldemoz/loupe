@@ -83,7 +83,7 @@ import Testing
         for format in ["text", "github", "json"] {
             let result = try await Self.run(["check", "--format", format], in: empty)
             #expect(result.status == 2, "\(format)")
-            #expect(result.stderr.contains("loupe: error: No loupe.json found"))
+            #expect(result.stderr.contains("loupe: error: No .loupe.json found"))
             #expect(result.stdout.isEmpty)
         }
     }

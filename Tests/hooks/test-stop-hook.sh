@@ -65,10 +65,10 @@ FAKE_STATUS=1 run '{"stop_hook_active":true}' 0 "stop_hook_active (compact JSON)
 # 6. Loupe could not run: surfaced, but not blocking.
 FAKE_STATUS=2 FAKE_OUTPUT='bad config' run '{}' 1 "a run error is non-blocking" "bad config"
 
-# 7. A manifest-only change counts through its .swift suffix; a loupe.json change counts too.
+# 7. A manifest-only change counts through its .swift suffix; a .loupe.json change counts too.
 git add -A && git -c user.name=t -c user.email=t@example.com commit -q -m two
-echo '{}' > loupe.json
-FAKE_STATUS=1 run '{}' 2 "loupe.json changes trigger a check"
+echo '{}' > .loupe.json
+FAKE_STATUS=1 run '{}' 2 ".loupe.json changes trigger a check"
 
 # 8. Not installed: nothing to enforce.
 : > "$LOUPE_CALLS"

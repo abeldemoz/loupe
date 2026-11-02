@@ -137,7 +137,7 @@ final class FixtureApp {
     // MARK: The baseline app: no violations
 
     static let baseline: [String: String] = [
-        "loupe.json": #"""
+        ".loupe.json": #"""
         {
           "version": 1,
           "packages": {

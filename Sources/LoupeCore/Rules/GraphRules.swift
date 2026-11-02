@@ -13,7 +13,7 @@ struct GraphRules: Rule {
     static let forbiddenPackage = RuleInfo(
         id: "forbidden-package-dependency", family: "Dependency graph",
         title: "Packages depend only on the packages their role allows",
-        rule: "A package may depend only on the packages its role allows: interface packages on Utilities; Core on CoreInterface, CrossInterface and Utilities; Presentation on the interface packages and Utilities. No package may depend on Core or Presentation, and none on a package loupe.json doesn't map.",
+        rule: "A package may depend only on the packages its role allows: interface packages on Utilities; Core on CoreInterface, CrossInterface and Utilities; Presentation on the interface packages and Utilities. No package may depend on Core or Presentation, and none on a package .loupe.json doesn't map.",
         why: "Implementations stay swappable, and recompile independently, only if nothing but the composition root depends on them. The composition root is the one place that wires implementations together.",
         howToFix: "Remove the `.package(path:)` entry and the target dependencies on its products. Depend on the matching interface package instead, and let the composition root inject the implementation."
     )
@@ -62,9 +62,9 @@ struct GraphRules: Rule {
     static let unmappedTarget = RuleInfo(
         id: "unmapped-target", family: "Dependency graph",
         title: "Every target has a role",
-        rule: "Every target in a mapped package must be one the architecture knows: the package's main target, its test doubles or TestSupport target as named in loupe.json, a test target, or (in Core) a feature target.",
+        rule: "Every target in a mapped package must be one the architecture knows: the package's main target, its test doubles or TestSupport target as named in .loupe.json, a test target, or (in Core) a feature target.",
         why: "Loupe decides which dependency and purity rules apply to a target from its role. A target it can't classify would escape every rule.",
-        howToFix: "If it is the package's test doubles, TestSupport or routing test doubles target, name it in loupe.json. Otherwise move it into the main target, or into a package outside the architecture."
+        howToFix: "If it is the package's test doubles, TestSupport or routing test doubles target, name it in .loupe.json. Otherwise move it into the main target, or into a package outside the architecture."
     )
 
     var infos: [RuleInfo] {
@@ -108,8 +108,8 @@ struct GraphRules: Rule {
                 violations.append(
                     Violation(
                         ruleID: Self.forbiddenPackage.id, location: edge.location,
-                        summary: "\(quoted(package.name)) depends on the local package \(quoted(name)), which loupe.json doesn't map to a role",
-                        fix: "Remove \(edge.written) and any dependencies on its products. If \(quoted(name)) is part of the architecture, map it in loupe.json; if it isn't, nothing in the architecture may depend on it."
+                        summary: "\(quoted(package.name)) depends on the local package \(quoted(name)), which .loupe.json doesn't map to a role",
+                        fix: "Remove \(edge.written) and any dependencies on its products. If \(quoted(name)) is part of the architecture, map it in .loupe.json; if it isn't, nothing in the architecture may depend on it."
                     )
                 )
             case .mapped(let role):
@@ -220,7 +220,7 @@ struct GraphRules: Rule {
             return Violation(
                 ruleID: Self.unmappedTarget.id, location: target.location,
                 summary: "Target \(quoted(target.name)) in \(quoted(package.name)) (\(package.role.title)) has no role in the architecture",
-                fix: "If it is this package's test doubles, TestSupport or routing test doubles target, name it in loupe.json under packages.\(package.role.rawValue). Otherwise move its code into the package's main target, or into a package outside the architecture."
+                fix: "If it is this package's test doubles, TestSupport or routing test doubles target, name it in .loupe.json under packages.\(package.role.rawValue). Otherwise move its code into the package's main target, or into a package outside the architecture."
                     + (target.type == "regular" ? "" : " (Its type is \(target.type); only regular and test targets are part of the architecture.)")
             )
         }

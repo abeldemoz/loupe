@@ -5,7 +5,7 @@ import LoupeArchitecture
 
 @Suite struct ConfigTests {
     func decode(_ json: String) throws -> LoupeConfig {
-        try ConfigLoader.decode(Data(json.utf8), fileURL: URL(fileURLWithPath: "/app/loupe.json"))
+        try ConfigLoader.decode(Data(json.utf8), fileURL: URL(fileURLWithPath: "/app/.loupe.json"))
     }
 
     func problems(_ json: String) -> [String] {
@@ -90,8 +90,24 @@ import LoupeArchitecture
             _ = try ConfigLoader.load(directory: directory)
             Issue.record("expected an error")
         } catch let error as LoupeError {
-            #expect(error.message.contains("No loupe.json found in \(directory.path)"))
+            #expect(error.message.contains("No .loupe.json found in \(directory.path)"))
             #expect(error.message.contains("\"coreInterface\""))
+        } catch {
+            Issue.record("unexpected \(error)")
+        }
+    }
+
+    @Test func theVisibleFileNameOfV010SaysHowToMigrate() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent("loupe-legacy-\(UUID().uuidString)")
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        try Data("{}".utf8).write(to: directory.appendingPathComponent("loupe.json"))
+        do {
+            _ = try ConfigLoader.load(directory: directory)
+            Issue.record("expected an error")
+        } catch let error as LoupeError {
+            #expect(error.message.contains("No .loupe.json found in \(directory.path), but there is a loupe.json"))
+            #expect(error.message.contains("git mv loupe.json .loupe.json"))
         } catch {
             Issue.record("unexpected \(error)")
         }

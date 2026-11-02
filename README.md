@@ -19,12 +19,12 @@ violation in the app is reported at once, in a stable order, and the exit code s
 |---|---|
 | 0 | No violations |
 | 1 | Violations found (in every output format) |
-| 2 | Loupe couldn't run: a bad `loupe.json`, a `Package.swift` that won't load, a `--base` ref that doesn't exist |
+| 2 | Loupe couldn't run: a bad `.loupe.json`, a `Package.swift` that won't load, a `--base` ref that doesn't exist |
 
 ## What it checks
 
 Loupe knows one architecture: interface/implementation layers, the Scene + Presenter pattern, and
-per-feature Core targets. An app's `loupe.json` only maps its own package and target names onto the
+per-feature Core targets. An app's `.loupe.json` only maps its own package and target names onto the
 roles, so every app gets the same rules and the same messages.
 
 Version 0.1 checks **Swift packages** (Utilities, CoreInterface, CrossInterface, the presentation
@@ -86,7 +86,7 @@ loupe explain <rule-id>
 loupe --version
 ```
 
-- `path` is the directory containing `loupe.json` (default: the current directory).
+- `path` is the directory containing `.loupe.json` (default: the current directory).
 - `--format github` prints `::error` workflow commands, which GitHub turns into annotations on the pull
   request. `--format json` is for tooling.
 - `--base origin/develop` also reports every `loupe:allow` that the branch added since its
@@ -95,7 +95,7 @@ loupe --version
 
 ## Configuration
 
-`loupe.json` sits at the root of the app and maps packages to roles. Add `$schema` for editor
+`.loupe.json` sits at the root of the app and maps packages to roles. Add `$schema` for editor
 validation (the schema is attached to each release). Unknown keys are errors, so a typo can't switch a
 rule off.
 
@@ -151,7 +151,7 @@ relevant changed, and it never loops. Copy it into the app repository and regist
 }
 ```
 
-The argument is the directory containing `loupe.json`.
+The argument is the directory containing `.loupe.json`.
 
 ## Development
 

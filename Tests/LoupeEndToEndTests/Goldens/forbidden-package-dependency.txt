@@ -1,5 +1,5 @@
 Presentation/Package.swift:11:9: error: [forbidden-package-dependency] 'Presentation' (presentation package) depends on 'Core' (core package)
-    rule: A package may depend only on the packages its role allows: interface packages on Utilities; Core on CoreInterface, CrossInterface and Utilities; Presentation on the interface packages and Utilities. No package may depend on Core or Presentation, and none on a package loupe.json doesn't map.
+    rule: A package may depend only on the packages its role allows: interface packages on Utilities; Core on CoreInterface, CrossInterface and Utilities; Presentation on the interface packages and Utilities. No package may depend on Core or Presentation, and none on a package .loupe.json doesn't map.
     why:  No package may depend on the core package: only the composition root wires implementations together, which is what keeps them swappable and independently compilable.
     fix:  Remove .package(path: "../Core") from Presentation/Package.swift and the dependencies on its products from: Presentation. Depend on the interface package instead (for example CoreInterface or PresentationInterface) and let the composition root inject the implementation.
     more: loupe explain forbidden-package-dependency

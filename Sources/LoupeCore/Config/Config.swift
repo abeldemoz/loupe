@@ -1,10 +1,10 @@
 import Foundation
 import LoupeArchitecture
 
-/// `loupe.json`: maps an app's package and target names onto the canonical architecture's roles.
+/// `.loupe.json`: maps an app's package and target names onto the canonical architecture's roles.
 public struct LoupeConfig: Sendable, Equatable {
     public struct Package: Sendable, Equatable {
-        /// Package directory, relative to `loupe.json`.
+        /// Package directory, relative to `.loupe.json`.
         public var path: String
         /// The main target, when it isn't named like the package directory.
         public var target: String?
@@ -46,9 +46,12 @@ public struct LoupeConfig: Sendable, Equatable {
 }
 
 public enum ConfigLoader {
-    public static let fileName = "loupe.json"
+    public static let fileName = ".loupe.json"
 
-    /// The keys each object in `loupe.json` may have. Anything else is an error, so a typo can't
+    /// What v0.1.0 read. Loupe doesn't load it, but it recognises it to say how to migrate.
+    static let legacyFileName = "loupe.json"
+
+    /// The keys each object in `.loupe.json` may have. Anything else is an error, so a typo can't
     /// quietly switch a rule off.
     static let topLevelKeys = ["$schema", "version", "packages", "exclude"]
     static let packageKeys = ["path", "target", "testDoubles", "testSupport", "routingTestDoubles"]
@@ -64,10 +67,19 @@ public enum ConfigLoader {
         }
     }
 
-    /// Finds `loupe.json` in `directory` and decodes it, reporting every problem at once.
+    /// Finds `.loupe.json` in `directory` and decodes it, reporting every problem at once.
     public static func load(directory: URL) throws -> (config: LoupeConfig, root: URL) {
         let url = directory.appendingPathComponent(fileName)
         guard let data = FileManager.default.contents(atPath: url.path) else {
+            if FileManager.default.fileExists(atPath: directory.appendingPathComponent(legacyFileName).path) {
+                throw LoupeError(
+                    """
+                    No \(fileName) found in \(directory.path), but there is a \(legacyFileName)
+                      Loupe reads a hidden config file, like other linters do. Rename it:
+                      git mv \(legacyFileName) \(fileName)
+                    """
+                )
+            }
             throw LoupeError(
                 """
                 No \(fileName) found in \(directory.path)

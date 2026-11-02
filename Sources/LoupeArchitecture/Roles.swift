@@ -1,4 +1,4 @@
-/// The role a Swift package plays in the architecture. `loupe.json` maps each app's package
+/// The role a Swift package plays in the architecture. `.loupe.json` maps each app's package
 /// directories onto these roles; the rules only ever talk about roles, so one rule set serves every app.
 public enum Role: String, CaseIterable, Codable, Sendable {
     case utilities

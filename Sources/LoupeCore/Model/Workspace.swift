@@ -44,9 +44,9 @@ struct WorkspaceTarget: Sendable {
 /// A `.package(...)` entry in a package's `dependencies:`.
 struct PackageEdge: Sendable {
     enum Destination: Sendable {
-        /// A local package that `loupe.json` maps to a role.
+        /// A local package that `.loupe.json` maps to a role.
         case mapped(Role)
-        /// A local package `loupe.json` doesn't know.
+        /// A local package `.loupe.json` doesn't know.
         case unmapped(path: String)
         /// A package fetched by URL or from a registry.
         case remote(identity: String, location: String?)

@@ -243,7 +243,7 @@ import Testing
 
     @Test func aMissingConfigIsARunError() async throws {
         let app = try FixtureApp()
-        try FileManager.default.removeItem(at: app.url("loupe.json"))
+        try FileManager.default.removeItem(at: app.url(".loupe.json"))
         await #expect(throws: LoupeError.self) { try await app.run() }
     }
 
@@ -272,7 +272,7 @@ import Testing
 
     @Test func aConfiguredTargetThatDoesNotExistIsARunError() async throws {
         let app = try FixtureApp()
-        try app.replace("\"testDoubles\": \"SceneTestDoubles\"", with: "\"testDoubles\": \"SceneDoubles\"", in: "loupe.json")
+        try app.replace("\"testDoubles\": \"SceneTestDoubles\"", with: "\"testDoubles\": \"SceneDoubles\"", in: ".loupe.json")
         do {
             _ = try await app.run()
             Issue.record("expected a run error")

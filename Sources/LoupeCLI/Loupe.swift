@@ -9,7 +9,7 @@ struct Loupe: AsyncParsableCommand {
         abstract: "Checks that an iOS app follows its architecture.",
         discussion: """
             Exit codes: 0 no violations, 1 violations found, 2 Loupe couldn't run \
-            (bad loupe.json, a Package.swift that won't dump, a missing --base ref).
+            (bad .loupe.json, a Package.swift that won't dump, a missing --base ref).
             """,
         version: LoupeVersion.current,
         subcommands: [Check.self, Rules.self, Explain.self],
@@ -22,10 +22,10 @@ extension OutputFormat: ExpressibleByArgument {}
 struct Check: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         abstract: "Check the app against the architecture's rules.",
-        discussion: "Reads loupe.json from the given directory, then reports every violation at once, in a stable order."
+        discussion: "Reads .loupe.json from the given directory, then reports every violation at once, in a stable order."
     )
 
-    @Argument(help: "The directory containing loupe.json.")
+    @Argument(help: "The directory containing .loupe.json.")
     var path: String = "."
 
     @Option(help: "Output format: text, github (PR annotations) or json.")
