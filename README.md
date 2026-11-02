@@ -69,7 +69,7 @@ version with [mise](https://mise.jdx.dev):
 ```toml
 # mise.toml
 [tools]
-"github:<owner>/loupe" = "0.1.0"
+"github:<owner>/loupe" = "0.2.0"
 ```
 
 A version pin means new rules reach an app only when the app bumps it.
